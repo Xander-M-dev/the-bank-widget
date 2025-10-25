@@ -5,9 +5,6 @@ __pycache__/
 
 # PyCharm IDE
 .idea/
-*.iml
-*.iws
-*.ipr
 
 # Virtual environments
 venv/
@@ -22,9 +19,6 @@ env/
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# Poetry
-poetry.lock
 
 # Testing
 .pytest_cache/
