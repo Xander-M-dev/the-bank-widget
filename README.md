@@ -34,6 +34,8 @@ toml
 [tool.mypy]
 disallow_untyped_defs = true
 warn_return_any = true
+
+
 # Проверка качества кода
 
 
@@ -50,7 +52,7 @@ poetry run flake8 .
 poetry run mypy .
 
 ## Как использовать
-Спрятать номер карты или счёта
+### Спрятать номер карты или счёта
 python
 from src.widget import mask_account_card
 
@@ -89,7 +91,8 @@ new_first = sort_by_date(operations)
 
 ### Сначала старые  
 old_first = sort_by_date(operations, False)
-🛠 Для разработчиков
+
+## Для разработчиков
 Структура проекта
 text
 the-bank-widget/
