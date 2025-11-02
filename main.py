@@ -13,7 +13,7 @@ print(mask_account_card("Счет 73654108430135874305"))  # Счет **4305
 from src.widget import mask_account_card
 
 
-def main():
+def main() -> None:
     """Примеры использования функции mask_account_card"""
     examples = [
         "Visa Platinum 7000792289606361",
@@ -35,3 +35,16 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+from src.widget import get_date
+
+print("\nДемонстрация работы функции get_date:")
+print("=" * 50)
+
+date_examples = ["2024-03-11T02:26:18.671407", "2023-12-25T15:30:45.123456", "2022-07-01T00:00:00.000000"]
+
+for example in date_examples:
+    result = get_date(example)
+    print(f"Вход:  {example}")
+    print(f"Выход: {result}")
+    print("-" * 30)
