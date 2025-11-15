@@ -92,6 +92,27 @@ new_first = sort_by_date(operations)
 ### Сначала старые  
 old_first = sort_by_date(operations, False)
 
+## Генераторы данных
+
+Модуль `generators` предоставляет инструменты для эффективной работы с большими объемами данных транзакций.
+
+### Фильтрация транзакций по валюте
+python
+from src.generators import filter_by_currency
+
+transactions = [...]  # ваш список транзакций
+usd_transactions = filter_by_currency(transactions, "USD")
+
+### Использование как итератора
+for transaction in usd_transactions:
+    print(transaction)
+
+### Или с помощью next()
+usd_iter = filter_by_currency(transactions, "USD")
+print(next(usd_iter))
+print(next(usd_iter))
+
+
 ## Для разработчиков
 Структура проекта
 text
