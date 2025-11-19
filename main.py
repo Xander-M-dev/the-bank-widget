@@ -32,42 +32,7 @@ def main() -> None:
         print(f"Выход: {result}")
         print("-" * 30)
 
-    # Тестируем get_date
-    print("\n2. Функция get_date:")
-    print("-" * 40)
-
-    date_examples = [
-        "2024-03-11T02:26:18.671407",
-        "2023-12-25T15:30:45.123456",
-        "2022-07-01T00:00:00.000000",
-    ]
-
-    for example in date_examples:
-        result = get_date(example)
-        print(f"Вход:  {example}")
-        print(f"Выход: {result}")
-        print("-" * 30)
-
-    # Тестируем processing функции
-    print("\n3. Функции обработки операций:")
-    print("-" * 40)
-
-    operations = [
-        {"id": 1, "state": "EXECUTED", "date": "2024-01-15T10:30:00.000000"},
-        {"id": 2, "state": "CANCELED", "date": "2024-01-14T12:45:00.000000"},
-        {"id": 3, "state": "EXECUTED", "date": "2024-01-16T09:15:00.000000"},
-        {"id": 4, "state": "PENDING", "date": "2024-01-13T08:00:00.000000"},
-    ]
-
-    print("Фильтрация выполненных операций:")
-    executed_ops = filter_by_state(operations, "EXECUTED")
-    for op in executed_ops:
-        print(f"  Операция {op['id']}: {op['state']} - {get_date(op['date'])}")
-
-    print("\nСортировка операций (новые сначала):")
-    sorted_ops = sort_by_date(operations, True)
-    for op in sorted_ops:
-        print(f"  Операция {op['id']}: {get_date(op['date'])} - {op['state']}")
+    return None  # Явно возвращаем None
 
 
 if __name__ == "__main__":
