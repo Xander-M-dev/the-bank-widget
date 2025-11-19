@@ -4,7 +4,7 @@ from functools import wraps
 
 
 def log(filename: Optional[str] = None) -> Callable:
-    """ Декоратор для логирования выполнения функций."""
+    """Декоратор для логирования выполнения функций."""
 
     def decorator(func: Callable) -> Callable:
         @wraps(func)
