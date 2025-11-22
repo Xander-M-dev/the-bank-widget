@@ -27,3 +27,9 @@ Thumbs.db
 
 # Mypy
 .mypy_cache/
+
+.env
+.env.local
+
+config.ini
+secrets.json
