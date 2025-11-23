@@ -1,6 +1,8 @@
-from src.masks import get_mask_card_number, get_mask_account
-from src.widget import mask_account_card, get_date
+from src.external_api import get_transaction_amount_rub
+from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
+from src.utils import load_transactions
+from src.widget import get_date, mask_account_card
 
 
 def main() -> None:
@@ -68,6 +70,31 @@ def main() -> None:
     sorted_ops = sort_by_date(operations, True)
     for op in sorted_ops:
         print(f"  Операция {op['id']}: {get_date(op['date'])} - {op['state']}")
+
+    # Демонстрация новых функций
+    print("\n4. Новые функции (загрузка и конвертация):")
+    print("-" * 40)
+
+    # Загрузка транзакций из файла
+    transactions = load_transactions("data/operations.json")
+    print(f"Загружено транзакций: {len(transactions)}")
+
+    if transactions:
+        # Показываем первые 3 транзакции
+        for i, transaction in enumerate(transactions[:3]):
+            print(f"\nТранзакция {i + 1}:")
+            print(f"  Описание: {transaction.get('description', 'N/A')}")
+
+            # Получаем сумму в рублях
+            amount_rub = get_transaction_amount_rub(transaction)
+            operation_amount = transaction.get("operationAmount", {})
+            original_amount = operation_amount.get("amount", "N/A")
+            currency = operation_amount.get("currency", {}).get("code", "N/A")
+
+            print(f"  Сумма: {original_amount} {currency}")
+            print(f"  Сумма в рублях: {amount_rub:.2f} RUB")
+
+    return None
 
 
 if __name__ == "__main__":
