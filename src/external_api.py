@@ -1,32 +1,36 @@
 import os
-from typing import Any, Dict
-
 import requests
+from typing import Dict, Any
 
 
-def get_currency_rate(currency: str) -> float:
-    """Получает текущий курс валюты к рублю через API."""
+def convert_currency(amount: float, from_currency: str, to_currency: str = "RUB") -> float:
+    """Конвертирует сумму из одной валюты в другую через API."""
     # Получаем API ключ из переменных окружения
-    api_key = os.getenv("EXCHANGE_RATE_API_KEY")
+    api_key = os.getenv('EXCHANGE_RATE_API_KEY')
 
     if not api_key:
         raise ValueError("API ключ не найден. Проверьте переменную окружения EXCHANGE_RATE_API_KEY")
 
-    url = f"https://api.apilayer.com/exchangerates_data/latest?base={currency}&symbols=RUB"
+    # Используем endpoint /convert как требуется
+    url = f"https://api.apilayer.com/exchangerates_data/convert?to={to_currency}&from={from_currency}&amount={amount}"
 
     try:
         # Делаем запрос к API
-        response = requests.get(url, headers={"apikey": api_key}, timeout=10)
+        response = requests.get(
+            url,
+            headers={"apikey": api_key},
+            timeout=10
+        )
 
         if response.status_code == 200:
             data: Dict[str, Any] = response.json()
-            rates = data.get("rates", {})
-            rub_rate = rates.get("RUB")
 
-            if rub_rate is None:
-                raise ValueError(f"Курс RUB для валюты {currency} не найден в ответе API")
-
-            return float(rub_rate)
+            # Проверяем успешность запроса и наличие поля result
+            if data.get('success') and 'result' in data:
+                return float(data['result'])
+            else:
+                error_info = data.get('error', {}).get('info', 'Неизвестная ошибка API')
+                raise Exception(f"Ошибка в ответе API: {error_info}")
         else:
             raise Exception(f"Ошибка API: {response.status_code}")
 
@@ -38,22 +42,22 @@ def get_transaction_amount_rub(transaction: Dict[str, Any]) -> float:
     """Конвертирует сумму транзакции в рубли."""
     try:
         # Получаем информацию о сумме и валюте
-        operation_amount = transaction.get("operationAmount", {})
-        amount_str = operation_amount.get("amount", "0")
-        currency = operation_amount.get("currency", {}).get("code", "RUB")
+        operation_amount = transaction.get('operationAmount', {})
+        amount_str = operation_amount.get('amount', '0')
+        currency = operation_amount.get('currency', {}).get('code', 'RUB')
 
         # Конвертируем строку в float
         amount = float(amount_str)
 
         # Если валюта уже рубли - возвращаем как есть
-        if currency == "RUB":
+        if currency == 'RUB':
             return amount
 
-        # Если валюта USD или EUR - конвертируем
-        if currency in ["USD", "EUR"]:
+        # Если валюта USD или EUR - конвертируем через API
+        if currency in ['USD', 'EUR']:
             try:
-                rate = get_currency_rate(currency)
-                return amount * rate
+                # Используем API для конвертации, полагаясь на результат от API
+                return convert_currency(amount, currency, "RUB")
             except Exception as e:
                 print(f"Ошибка конвертации валюты {currency}: {e}")
                 return amount
