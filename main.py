@@ -1,22 +1,54 @@
-from src.external_api import get_transaction_amount_rub
-from src.masks import get_mask_account, get_mask_card_number
-from src.processing import filter_by_state, sort_by_date
-from src.utils import load_transactions
-from src.widget import get_date, mask_account_card
+try:
+    from src.widget import mask_account_card, get_date
+    from src.processing import filter_by_state, sort_by_date
+    from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
+    from src.decorators import log
+    from src.utils import load_transactions
+    from src.external_api import get_transaction_amount_rub
+
+    print(" Все модули успешно импортированы")
+except ImportError as e:
+    print(f" Ошибка импорта: {e}")
+    exit(1)
 
 
 def main() -> None:
-    """Демонстрация работы всех функций проекта"""
-    print("ДЕМОНСТРАЦИЯ РАБОТЫ ФУНКЦИЙ")
+    """Демонстрация работы всех функций проекта с логированием"""
+    print("ДЕМОНСТРАЦИЯ РАБОТЫ ФУНКЦИЙ С ЛОГИРОВАНИЕМ")
     print("=" * 60)
 
-    # Покажем документацию функций
-    print("\n📋 Документация функций:")
+    # Демонстрация логирования masks
+    print("\n Тестирование логирования модуля masks:")
     print("-" * 40)
-    print(get_mask_card_number.__doc__)
-    print(get_mask_account.__doc__)
 
-    # Тестируем mask_account_card
+    test_cards = [
+        "1234567812345678",
+        "123",
+        "1111222233334444"
+    ]
+
+    for card in test_cards:
+        result = mask_account_card(f"Card {card}")
+        print(f"Карта: {card} -> {result}")
+
+    # Демонстрация логирования utils
+    print("\n Тестирование логирования модуля utils:")
+    print("-" * 40)
+
+    # Валидный файл
+    try:
+        transactions = load_transactions("data/operations.json")
+        print(f"Загружено транзакций: {len(transactions)}")
+    except Exception as e:
+        print(f"Ошибка загрузки transactions: {e}")
+        transactions = []
+
+    try:
+        invalid_result = load_transactions("nonexistent_file.json")
+        print(f"Результат загрузки несуществующего файла: {len(invalid_result)} транзакций")
+    except Exception as e:
+        print(f"Ошибка загрузки несуществующего файла: {e}")
+
     print("\n1. Функция mask_account_card:")
     print("-" * 40)
 
@@ -24,78 +56,24 @@ def main() -> None:
         "Visa Platinum 7000792289606361",
         "Maestro 7000792289606361",
         "Счет 73654108430135874305",
-        "MasterCard 1234567812345678",
-        "Счет 98765432101234567890",
     ]
 
     for example in account_examples:
         result = mask_account_card(example)
         print(f"Вход:  {example}")
         print(f"Выход: {result}")
-        print("-" * 30)
 
-    # Тестируем get_date
-    print("\n2. Функция get_date:")
-    print("-" * 40)
-
-    date_examples = [
-        "2024-03-11T02:26:18.671407",
-        "2023-12-25T15:30:45.123456",
-        "2022-07-01T00:00:00.000000",
-    ]
-
-    for example in date_examples:
-        result = get_date(example)
-        print(f"Вход:  {example}")
-        print(f"Выход: {result}")
-        print("-" * 30)
-
-    # Тестируем processing функции
-    print("\n3. Функции обработки операций:")
-    print("-" * 40)
-
-    operations = [
-        {"id": 1, "state": "EXECUTED", "date": "2024-01-15T10:30:00.000000"},
-        {"id": 2, "state": "CANCELED", "date": "2024-01-14T12:45:00.000000"},
-        {"id": 3, "state": "EXECUTED", "date": "2024-01-16T09:15:00.000000"},
-        {"id": 4, "state": "PENDING", "date": "2024-01-13T08:00:00.000000"},
-    ]
-
-    print("Фильтрация выполненных операций:")
-    executed_ops = filter_by_state(operations, "EXECUTED")
-    for op in executed_ops:
-        print(f"  Операция {op['id']}: {op['state']} - {get_date(op['date'])}")
-
-    print("\nСортировка операций (новые сначала):")
-    sorted_ops = sort_by_date(operations, True)
-    for op in sorted_ops:
-        print(f"  Операция {op['id']}: {get_date(op['date'])} - {op['state']}")
-
-    # Демонстрация новых функций
-    print("\n4. Новые функции (загрузка и конвертация):")
-    print("-" * 40)
-
-    # Загрузка транзакций из файла
-    transactions = load_transactions("data/operations.json")
-    print(f"Загружено транзакций: {len(transactions)}")
-
-    if transactions:
-        # Показываем первые 3 транзакции
-        for i, transaction in enumerate(transactions[:3]):
-            print(f"\nТранзакция {i + 1}:")
-            print(f"  Описание: {transaction.get('description', 'N/A')}")
-
-            # Получаем сумму в рублях
-            amount_rub = get_transaction_amount_rub(transaction)
-            operation_amount = transaction.get("operationAmount", {})
-            original_amount = operation_amount.get("amount", "N/A")
-            currency = operation_amount.get("currency", {}).get("code", "N/A")
-
-            print(f"  Сумма: {original_amount} {currency}")
-            print(f"  Сумма в рублях: {amount_rub:.2f} RUB")
-
-    return None
+    print("\n Демонстрация завершена!")
+    print(" Логи сохранены в папке logs/")
+    print("   - masks.log - логи маскировки карт и счетов")
+    print("   - utils.log - логи загрузки транзакций")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f" Критическая ошибка в main(): {e}")
+        import traceback
+
+        traceback.print_exc()
