@@ -154,4 +154,33 @@ poetry run pytest --cov=src
 ## Генерация HTML отчета покрытия
 poetry run pytest --cov=src --cov-report=html
 
+#  Декораторы
 
+Модуль "decorators" предоставляет инструменты для автоматического логирования выполнения функций.
+
+## Декоратор log
+Автоматически логирует начало и конец выполнения функции, а также ошибки.
+
+
+from src.decorators import log
+
+### Логирование в консоль
+@log()
+def add(a: int, b: int) -> int:
+    return a + b
+### Логирование в файл
+@log(filename="operations.log")
+def divide(a: int, b: int) -> float:
+    return a / b
+
+#  Чтение CSV и Excel файлов
+
+Модуль file_reader предоставляет функции для чтения транзакций из различных форматов:
+
+## Чтение CSV файлов
+
+python
+from src.file_reader import read_csv_file
+
+transactions = read_csv_file("data/transactions.csv")
+print(f"Загружено {len(transactions)} транзакций")
