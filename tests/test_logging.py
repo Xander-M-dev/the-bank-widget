@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from src.masks import get_mask_account, get_mask_card_number
 from src.utils import load_transactions
 
