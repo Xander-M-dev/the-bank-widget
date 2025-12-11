@@ -184,3 +184,14 @@ from src.file_reader import read_csv_file
 
 transactions = read_csv_file("data/transactions.csv")
 print(f"Загружено {len(transactions)} транзакций")
+
+#  Анализ транзакций
+
+## Поиск транзакций по описанию
+python
+from src.operations_analyzer import search_transactions_by_description
+
+## Поиск без учета регистра
+transactions = [...]  # список транзакций
+result = search_transactions_by_description(transactions, "перевод")
+print(f"Найдено {len(result)} транзакций")
